@@ -1,5 +1,4 @@
-import { Box, styled } from '@mui/material'
-import { Grid } from '@mui/system'
+import { Box, Stack, styled } from '@mui/material'
 import { useEffect } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 
@@ -12,9 +11,10 @@ import { useDebounce } from '~/hooks/useDebounce'
 const StyledBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
-  padding: 12,
+  padding: 18,
   mb: 4,
   backgroundColor: theme.palette.background.paper,
+  borderRadius: 8,
 
   '&:focus-visible': {
     outline: '3px solid',
@@ -32,15 +32,23 @@ interface FilterForm {
 
 interface ProductFiltersProps {
   onFilterChange: (filters: FilterForm) => void
+  categories: string[]
+  brands: string[]
+  maxPrice: number
 }
 
-export const ProductFilters = ({ onFilterChange }: ProductFiltersProps) => {
+export const ProductFilters = ({
+  onFilterChange,
+  categories,
+  brands,
+  maxPrice,
+}: ProductFiltersProps) => {
   const methods = useForm<FilterForm>({
     defaultValues: {
       search: '',
       category: '',
       brand: '',
-      priceRange: [0, 1000],
+      priceRange: [0, maxPrice],
     },
   })
 
@@ -56,53 +64,41 @@ export const ProductFilters = ({ onFilterChange }: ProductFiltersProps) => {
   }, [debouncedFilters, onFilterChange])
 
   return (
-    <FormProvider onSubmit={console.log} {...methods}>
+    <FormProvider {...methods}>
       <StyledBox>
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <RHFText
-              name="search"
-              label="Search"
-              placeholder="Search for products..."
-            />
-          </Grid>
+        <Stack spacing={2}>
+          <RHFText
+            name="search"
+            label="Search"
+            placeholder="Search for products..."
+          />
 
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <RHFSelect
-              name="category"
-              label="Category"
-              options={[
-                { value: '', label: 'All' },
-                { value: 'electronics', label: 'Electronics' },
-                { value: 'clothing', label: 'Clothing' },
-                { value: 'shoes', label: 'Shoes' },
-              ]}
-            />
-          </Grid>
+          <RHFSelect
+            name="category"
+            label="Category"
+            options={[
+              { value: '', label: 'All' },
+              ...categories.map((cat) => ({ value: cat, label: cat })),
+            ]}
+          />
 
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <RHFSelect
-              name="brand"
-              label="Brand"
-              options={[
-                { value: '', label: 'All' },
-                { value: 'Nike', label: 'Nike' },
-                { value: 'Adidas', label: 'Adidas' },
-                { value: 'Apple', label: 'Apple' },
-              ]}
-            />
-          </Grid>
+          <RHFSelect
+            name="brand"
+            label="Brand"
+            options={[
+              { value: '', label: 'All' },
+              ...brands.map((brand) => ({ value: brand, label: brand })),
+            ]}
+          />
 
-          <Grid size={{ xs: 12 }}>
-            <RHFSlide
-              name="priceRange"
-              label="Price Range"
-              min={0}
-              max={1000}
-              step={10}
-            />
-          </Grid>
-        </Grid>
+          <RHFSlide
+            name="priceRange"
+            label="Price Range"
+            min={0}
+            max={1000}
+            step={10}
+          />
+        </Stack>
       </StyledBox>
     </FormProvider>
   )

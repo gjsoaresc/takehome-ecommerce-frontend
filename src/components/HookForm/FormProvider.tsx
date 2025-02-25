@@ -8,7 +8,7 @@ import {
 
 type Props<T extends FieldValues> = {
   children: ReactNode
-  onSubmit: SubmitHandler<T>
+  onSubmit?: SubmitHandler<T>
 } & UseFormReturn<T>
 
 export const FormProvider = <T extends FieldValues>({
@@ -18,7 +18,9 @@ export const FormProvider = <T extends FieldValues>({
 }: Props<T>) => {
   return (
     <RHFProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>{children}</form>
+      <form onSubmit={onSubmit ? methods.handleSubmit(onSubmit) : () => void 0}>
+        {children}
+      </form>
     </RHFProvider>
   )
 }

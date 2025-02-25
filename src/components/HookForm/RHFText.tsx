@@ -1,4 +1,4 @@
-import { TextField } from '@mui/material'
+import { FormControl, FormLabel, TextField } from '@mui/material'
 import { Controller, useFormContext } from 'react-hook-form'
 
 interface Props {
@@ -23,16 +23,19 @@ export const RHFText = ({
       name={name}
       control={control}
       render={({ field, fieldState: { error } }) => (
-        <TextField
-          {...field}
-          fullWidth
-          label={label}
-          placeholder={placeholder}
-          type={type}
-          disabled={disabled}
-          error={!!error}
-          helperText={error?.message}
-        />
+        <FormControl>
+          <FormLabel htmlFor={name}>{label}</FormLabel>
+          <TextField
+            {...field}
+            fullWidth
+            variant="outlined"
+            placeholder={placeholder}
+            type={type}
+            disabled={disabled}
+            error={!!error}
+            helperText={error?.message}
+          />
+        </FormControl>
       )}
     />
   )

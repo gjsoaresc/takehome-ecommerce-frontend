@@ -1,7 +1,7 @@
 import {
   FormControl,
   FormHelperText,
-  InputLabel,
+  FormLabel,
   MenuItem,
   Select,
 } from '@mui/material'
@@ -9,7 +9,7 @@ import { Controller, useFormContext } from 'react-hook-form'
 
 interface Props {
   name: string
-  label: string
+  label?: string
   options: { value: string | number; label: string }[]
   disabled?: boolean
 }
@@ -22,9 +22,14 @@ export const RHFSelect = ({ name, label, options, disabled }: Props) => {
       name={name}
       control={control}
       render={({ field, fieldState: { error } }) => (
-        <FormControl fullWidth error={!!error}>
-          <InputLabel>{label}</InputLabel>
-          <Select {...field} label={label} disabled={disabled}>
+        <FormControl>
+          <FormLabel htmlFor={name}>{label}</FormLabel>
+          <Select
+            {...field}
+            label={label}
+            disabled={disabled}
+            variant="outlined"
+          >
             {options.map((option) => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}

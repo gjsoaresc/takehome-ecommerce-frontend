@@ -22,14 +22,25 @@ export type Filters = {
   shoeSize?: number
 }
 
-type PaginatedResponse = {
-  content: Product[]
+type FiltersResponse = {
+  categories: string[]
+  brands: string[]
+  maxPrice: number
+}
+
+type PaginationResponse = {
   totalPages: number
   totalElements: number
   pageNumber: number
   pageSize: number
   first: boolean
   last: boolean
+}
+
+type PaginatedResponse = {
+  content: Product[]
+  pagination: PaginationResponse
+  filters: FiltersResponse
 }
 
 export const useProducts = (

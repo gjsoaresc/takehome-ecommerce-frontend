@@ -1,4 +1,4 @@
-import { Box, Slider, Typography } from '@mui/material'
+import { Box, FormControl, FormLabel, Slider } from '@mui/material'
 import { Controller, useFormContext } from 'react-hook-form'
 
 interface Props {
@@ -16,23 +16,27 @@ export const RHFSlide = ({
   max = 100,
   step = 1,
 }: Props) => {
-  const { control } = useFormContext()
+  const { control, setValue } = useFormContext()
 
   return (
     <Controller
       name={name}
       control={control}
-      render={({ field }) => (
-        <Box sx={{ width: '100%' }}>
-          <Typography gutterBottom>{label}</Typography>
-          <Slider
-            {...field}
-            min={min}
-            max={max}
-            step={step}
-            valueLabelDisplay="auto"
-          />
-        </Box>
+      render={({ field: { value, onChange } }) => (
+        <FormControl>
+          <FormLabel htmlFor={name}>{label}</FormLabel>
+          <Box sx={{ mx: 1 }}>
+            <Slider
+              value={value || [min, max]}
+              min={min}
+              max={max}
+              step={step}
+              valueLabelDisplay="auto"
+              onChange={(_, newValue) => onChange(newValue)}
+              onChangeCommitted={(_, newValue) => setValue(name, newValue)}
+            />
+          </Box>
+        </FormControl>
       )}
     />
   )

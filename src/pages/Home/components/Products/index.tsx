@@ -1,101 +1,136 @@
-import RssFeedRoundedIcon from '@mui/icons-material/RssFeedRounded'
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
+import { Sort } from '@mui/icons-material'
 import {
   Box,
-  Chip,
-  Container,
   IconButton,
+  Menu,
+  MenuItem,
   Pagination,
+  Stack,
   Typography,
 } from '@mui/material'
 import Grid from '@mui/material/Grid2'
-import { useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { useDebounce } from '~/hooks/useDebounce'
 import { Filters, useProducts } from '~/hooks/useProduct'
 
 import { ProductCard } from './ProductCard'
+import { ProductFilters } from './ProductFilters'
 import { ProductSkeleton } from './ProductSkeleton'
 
 export const Products = () => {
   const [filters, setFilters] = useState<Partial<Filters>>({})
   const [page, setPage] = useState(0)
-  const debouncedFilters = useDebounce(filters, 500)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [sort, setSort] = useState<string>('price-asc')
+
+  const prevFiltersRef = useRef(filters)
+
+  const debouncedFilters = useDebounce({ ...filters, sort }, 500)
   const { data, isLoading } = useProducts(debouncedFilters, page, 10)
 
-  const handleFilterChange = (newFilters: Partial<Filters>) => {
-    setFilters(newFilters)
-    setPage(0)
+  const open = Boolean(anchorEl)
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
   }
 
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  const handleSortChange = (newSort: string) => {
+    setSort(newSort)
+    handleClose()
+  }
+
+  const handleFilterChange = useCallback((newFilters: Partial<Filters>) => {
+    setFilters((prevFilters) => {
+      if (JSON.stringify(prevFilters) !== JSON.stringify(newFilters)) {
+        prevFiltersRef.current = newFilters
+        setPage(0)
+      }
+      return newFilters
+    })
+  }, [])
+
+  const paginatedData = useMemo(() => data?.content || [], [data?.content])
+  const totalPages = useMemo(
+    () => data?.pagination.totalPages || 1,
+    [data?.pagination.totalPages],
+  )
+
   return (
-    <Container sx={{ mt: 4 }}>
-      <Typography variant="h4" align="center" gutterBottom>
-        Products
-      </Typography>
+    <Stack spacing={4}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Typography variant="h4" gutterBottom>
+          Products
+        </Typography>
 
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', md: 'row' },
-          justifyContent: 'space-between',
-          alignItems: { xs: 'start', md: 'center' },
-          gap: 2,
-          mb: 3,
-        }}
-      >
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <Chip
-            label="All"
-            onClick={() => handleFilterChange({ category: '' })}
-            variant={filters.category ? 'outlined' : 'filled'}
-          />
-          <Chip
-            label="Electronics"
-            onClick={() => handleFilterChange({ category: 'electronics' })}
-            variant={filters.category === 'electronics' ? 'filled' : 'outlined'}
-          />
-          <Chip
-            label="Clothing"
-            onClick={() => handleFilterChange({ category: 'clothing' })}
-            variant={filters.category === 'clothing' ? 'filled' : 'outlined'}
-          />
-          <Chip
-            label="Shoes"
-            onClick={() => handleFilterChange({ category: 'shoes' })}
-            variant={filters.category === 'shoes' ? 'filled' : 'outlined'}
-          />
-        </Box>
-
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <SearchRoundedIcon sx={{ color: 'text.primary' }} />
-          <Typography variant="body2">Search Products</Typography>
-          <IconButton size="small" aria-label="RSS feed">
-            <RssFeedRoundedIcon />
+        <Stack spacing={1} direction="row">
+          <IconButton
+            aria-controls={open ? 'sort-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            onClick={handleClick}
+          >
+            <Sort />
           </IconButton>
-        </Box>
+          <Menu
+            id="sort-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          >
+            <MenuItem onClick={() => handleSortChange('price-asc')}>
+              Price: Low to High
+            </MenuItem>
+            <MenuItem onClick={() => handleSortChange('price-desc')}>
+              Price: High to Low
+            </MenuItem>
+            <MenuItem onClick={() => handleSortChange('name-asc')}>
+              Name: A to Z
+            </MenuItem>
+            <MenuItem onClick={() => handleSortChange('name-desc')}>
+              Name: Z to A
+            </MenuItem>
+          </Menu>
+        </Stack>
       </Box>
 
-      {isLoading ? (
-        <ProductSkeleton />
-      ) : (
-        <Grid container spacing={2} columns={12}>
-          {data?.content.map((product) => (
-            <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
-              <ProductCard product={product} />
-            </Grid>
-          ))}
+      <Grid container spacing={2} columns={12}>
+        <Grid size={{ xs: 12, sm: 3 }}>
+          <ProductFilters
+            onFilterChange={handleFilterChange}
+            categories={data?.filters.categories || []}
+            brands={data?.filters.brands || []}
+            maxPrice={data?.filters.maxPrice || 1000}
+          />
         </Grid>
-      )}
+
+        {isLoading ? (
+          <ProductSkeleton />
+        ) : (
+          <Grid container size={{ xs: 12, sm: 9 }} spacing={2}>
+            {paginatedData.map((product) => (
+              <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
+                <ProductCard product={product} />
+              </Grid>
+            ))}
+          </Grid>
+        )}
+      </Grid>
 
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
         <Pagination
-          count={data?.totalPages || 1}
+          count={totalPages}
           page={page + 1}
           onChange={(_, newPage) => setPage(newPage - 1)}
           color="primary"
         />
       </Box>
-    </Container>
+    </Stack>
   )
 }
