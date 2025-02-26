@@ -9,13 +9,13 @@ import { navigationCustomizations } from './customizations/navigation'
 import { surfacesCustomizations } from './customizations/surfaces'
 import { colorSchemes, shadows, shape, typography } from './themePrimitives'
 
-interface AppThemeProps {
+type AppThemeProps = {
   children: React.ReactNode
   disableCustomTheme?: boolean
   themeComponents?: ThemeOptions['components']
 }
 
-export default function AppTheme(props: AppThemeProps) {
+export const AppTheme = (props: AppThemeProps) => {
   const { children, disableCustomTheme, themeComponents } = props
   const theme = React.useMemo(() => {
     return disableCustomTheme

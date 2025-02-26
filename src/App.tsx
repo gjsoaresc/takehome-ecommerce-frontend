@@ -4,7 +4,7 @@ import { useRoutes } from 'react-router-dom'
 import AppBar from './components/AppBar'
 import Footer from './components/Footer'
 import { routes } from './routes'
-import AppTheme from './theme/AppTheme'
+import { AppTheme } from './theme/AppTheme'
 
 const App = (props: { disableCustomTheme?: boolean }) => {
   const element = useRoutes(routes)

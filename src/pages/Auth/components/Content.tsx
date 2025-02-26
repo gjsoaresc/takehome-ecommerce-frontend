@@ -8,27 +8,27 @@ import Typography from '@mui/material/Typography'
 const items = [
   {
     icon: <SettingsSuggestRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Adaptable performance',
+    title: 'Unmatched Comfort',
     description:
-      'Our product effortlessly adjusts to your needs, boosting efficiency and simplifying your tasks.',
+      'Designed with advanced cushioning and breathable materials to keep your feet comfortable all day long.',
   },
   {
     icon: <ConstructionRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Built to last',
+    title: 'Built for Performance',
     description:
-      'Experience unmatched durability that goes above and beyond with lasting investment.',
+      'Whether running, training, or walking, our shoes provide the perfect balance of support and flexibility.',
   },
   {
     icon: <ThumbUpAltRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Great user experience',
+    title: 'Stylish & Versatile',
     description:
-      'Integrate our product into your routine with an intuitive and easy-to-use interface.',
+      'A perfect combination of fashion and function—our designs fit every occasion, from casual to athletic.',
   },
   {
     icon: <AutoFixHighRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Innovative functionality',
+    title: 'Next-Level Innovation',
     description:
-      'Stay ahead with features that set new standards, addressing your evolving needs better than the rest.',
+      'Featuring cutting-edge technology for superior grip, durability, and performance in every step.',
   },
 ]
 

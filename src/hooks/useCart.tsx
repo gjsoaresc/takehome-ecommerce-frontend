@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { apiClient } from '~/lib/apiClient'
 
-export interface CartItem {
+export type CartItem = {
   id: number
   product: {
     id: number

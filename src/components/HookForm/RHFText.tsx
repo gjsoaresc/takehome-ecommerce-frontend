@@ -1,9 +1,9 @@
 import { FormControl, FormLabel, TextField } from '@mui/material'
 import { Controller, useFormContext } from 'react-hook-form'
 
-interface Props {
+type Props = {
   name: string
-  label: string
+  label?: string
   placeholder?: string
   type?: string
   disabled?: boolean
@@ -24,7 +24,7 @@ export const RHFText = ({
       control={control}
       render={({ field, fieldState: { error } }) => (
         <FormControl>
-          <FormLabel htmlFor={name}>{label}</FormLabel>
+          {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
           <TextField
             {...field}
             fullWidth

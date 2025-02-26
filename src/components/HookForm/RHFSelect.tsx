@@ -7,14 +7,21 @@ import {
 } from '@mui/material'
 import { Controller, useFormContext } from 'react-hook-form'
 
-interface Props {
+type Props = {
   name: string
   label?: string
   options: { value: string | number; label: string }[]
   disabled?: boolean
+  multiple?: boolean
 }
 
-export const RHFSelect = ({ name, label, options, disabled }: Props) => {
+export const RHFSelect = ({
+  name,
+  label,
+  options,
+  disabled,
+  multiple,
+}: Props) => {
   const { control } = useFormContext()
 
   return (
@@ -25,10 +32,11 @@ export const RHFSelect = ({ name, label, options, disabled }: Props) => {
         <FormControl>
           <FormLabel htmlFor={name}>{label}</FormLabel>
           <Select
-            {...field}
+            variant="outlined"
             label={label}
             disabled={disabled}
-            variant="outlined"
+            multiple={multiple}
+            {...field}
           >
             {options.map((option) => (
               <MenuItem key={option.value} value={option.value}>

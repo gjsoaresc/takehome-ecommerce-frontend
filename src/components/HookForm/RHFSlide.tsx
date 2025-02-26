@@ -1,7 +1,7 @@
 import { Box, FormControl, FormLabel, Slider } from '@mui/material'
 import { Controller, useFormContext } from 'react-hook-form'
 
-interface Props {
+type Props = {
   name: string
   label: string
   min?: number

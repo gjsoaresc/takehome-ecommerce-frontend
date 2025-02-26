@@ -8,7 +8,7 @@ import {
 } from '@mui/material'
 import { styled } from '@mui/material/styles'
 
-interface ProductCardProps {
+type ProductCardProps = {
   product: {
     id: number
     name: string
@@ -21,8 +21,7 @@ interface ProductCardProps {
 const StyledCard = styled(Card)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
-  padding: 0,
-  height: '100%',
+  height: 420,
   backgroundColor: theme.palette.background.paper,
   '&:hover': {
     backgroundColor: 'transparent',
@@ -33,9 +32,8 @@ const StyledCard = styled(Card)(({ theme }) => ({
 const StyledCardContent = styled(CardContent)({
   display: 'flex',
   flexDirection: 'column',
-  gap: 4,
-  padding: 16,
   flexGrow: 1,
+  padding: 16,
   '&:last-child': {
     paddingBottom: 16,
   },
@@ -49,7 +47,10 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         height="200"
         image={product.imageUrl}
         alt={product.name}
-        sx={{ borderBottom: '1px solid', borderColor: 'divider' }}
+        sx={{
+          borderBottom: '1px solid',
+          borderColor: 'divider',
+        }}
       />
       <StyledCardContent>
         <Typography variant="h6">{product.name}</Typography>
@@ -57,8 +58,10 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           {product.brand} - ${product.price}
         </Typography>
       </StyledCardContent>
-      <CardActions>
-        <Button size="small" color="primary">
+      <CardActions sx={{ padding: 2, mt: 'auto' }}>
+        {' '}
+        {/* Ensures button sticks to bottom */}
+        <Button fullWidth color="primary">
           Add to Cart
         </Button>
       </CardActions>

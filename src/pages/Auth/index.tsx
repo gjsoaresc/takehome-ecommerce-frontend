@@ -1,9 +1,9 @@
 import { Stack } from '@mui/material'
+import { Outlet } from 'react-router-dom'
 
 import { Content } from './components/Content'
-import { SignInCard } from './components/SignInCard'
 
-export const SignIn = () => {
+export const Auth = () => {
   return (
     <Stack
       direction="column"
@@ -50,7 +50,7 @@ export const SignIn = () => {
           }}
         >
           <Content />
-          <SignInCard />
+          <Outlet />
         </Stack>
       </Stack>
     </Stack>

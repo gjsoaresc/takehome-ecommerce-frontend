@@ -7,7 +7,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import * as React from 'react'
 
-interface ForgotPasswordProps {
+type ForgotPasswordProps = {
   open: boolean
   handleClose: () => void
 }

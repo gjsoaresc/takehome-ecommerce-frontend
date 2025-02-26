@@ -10,7 +10,10 @@ import IconButton from '@mui/material/IconButton'
 import MenuItem from '@mui/material/MenuItem'
 import { alpha, styled } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
-import * as React from 'react'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+
+import { useAuth } from '~/contexts/AuthContext'
 
 import ColorModeIconDropdown from './ColorModeIconDropdown'
 import Sitemark from './SitemaskIcon'
@@ -30,7 +33,8 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 }))
 
 export default function AppBar() {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useState(false)
+  const { isAuthenticated, logout, user } = useAuth()
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen)
@@ -52,21 +56,31 @@ export default function AppBar() {
           <Box
             sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}
           >
-            <Sitemark />
+            <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Sitemark />
+            </Link>
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-              <Button variant="text" color="info" size="small">
-                Products
-              </Button>
               <Button
+                component={Link}
+                to="/"
                 variant="text"
                 color="info"
                 size="small"
-                sx={{ minWidth: 0 }}
               >
-                Blog
+                Products
+              </Button>
+              <Button
+                component={Link}
+                to="/cart"
+                variant="text"
+                color="info"
+                size="small"
+              >
+                Cart
               </Button>
             </Box>
           </Box>
+
           <Box
             sx={{
               display: { xs: 'none', md: 'flex' },
@@ -74,14 +88,42 @@ export default function AppBar() {
               alignItems: 'center',
             }}
           >
-            <Button color="primary" variant="text" size="small">
-              Sign in
-            </Button>
-            <Button color="primary" variant="contained" size="small">
-              Sign up
-            </Button>
+            {isAuthenticated ? (
+              <>
+                <Button
+                  color="primary"
+                  variant="text"
+                  size="small"
+                  onClick={logout}
+                >
+                  {user?.name}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  component={Link}
+                  to="/auth/signin"
+                  color="primary"
+                  variant="text"
+                  size="small"
+                >
+                  Sign in
+                </Button>
+                <Button
+                  component={Link}
+                  to="/auth/signup"
+                  color="primary"
+                  variant="contained"
+                  size="small"
+                >
+                  Sign up
+                </Button>
+              </>
+            )}
             <ColorModeIconDropdown />
           </Box>
+
           <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 1 }}>
             <ColorModeIconDropdown size="medium" />
             <IconButton aria-label="Menu button" onClick={toggleDrawer(true)}>
@@ -98,33 +140,74 @@ export default function AppBar() {
               }}
             >
               <Box sx={{ p: 2, backgroundColor: 'background.default' }}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                  }}
-                >
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                   <IconButton onClick={toggleDrawer(false)}>
                     <CloseRoundedIcon />
                   </IconButton>
                 </Box>
-                <MenuItem>Features</MenuItem>
-                <MenuItem>Testimonials</MenuItem>
-                <MenuItem>Highlights</MenuItem>
-                <MenuItem>Pricing</MenuItem>
-                <MenuItem>FAQ</MenuItem>
-                <MenuItem>Blog</MenuItem>
-                <Divider sx={{ my: 3 }} />
-                <MenuItem>
-                  <Button color="primary" variant="contained" fullWidth>
-                    Sign up
-                  </Button>
-                </MenuItem>
-                <MenuItem>
-                  <Button color="primary" variant="outlined" fullWidth>
-                    Sign in
-                  </Button>
-                </MenuItem>
+
+                {isAuthenticated ? (
+                  <>
+                    <MenuItem>{user?.name}</MenuItem>
+                    <Divider sx={{ my: 3 }} />
+                    <MenuItem
+                      onClick={() => {
+                        logout()
+                        toggleDrawer(false)()
+                      }}
+                    >
+                      <Button color="primary" variant="outlined" fullWidth>
+                        Logout
+                      </Button>
+                    </MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem onClick={toggleDrawer(false)}>
+                      <Button
+                        component={Link}
+                        to="/products"
+                        variant="text"
+                        color="info"
+                        fullWidth
+                      >
+                        Products
+                      </Button>
+                      <Button
+                        component={Link}
+                        to="/cart"
+                        variant="text"
+                        color="info"
+                        fullWidth
+                      >
+                        Cart
+                      </Button>
+                    </MenuItem>
+                    <Divider sx={{ my: 3 }} />
+                    <MenuItem onClick={toggleDrawer(false)}>
+                      <Button
+                        component={Link}
+                        to="/auth/signup"
+                        color="primary"
+                        variant="contained"
+                        fullWidth
+                      >
+                        Sign up
+                      </Button>
+                    </MenuItem>
+                    <MenuItem onClick={toggleDrawer(false)}>
+                      <Button
+                        component={Link}
+                        to="/auth/signin"
+                        color="primary"
+                        variant="outlined"
+                        fullWidth
+                      >
+                        Sign in
+                      </Button>
+                    </MenuItem>
+                  </>
+                )}
               </Box>
             </Drawer>
           </Box>

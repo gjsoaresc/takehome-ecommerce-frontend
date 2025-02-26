@@ -16,15 +16,18 @@ type Product = {
 
 export type Filters = {
   search?: string
-  category?: string
-  brand?: string
+  categories?: string[]
+  brands?: string[]
+  colors?: string[]
+  shoeSizes?: string[]
   priceRange?: number[]
-  shoeSize?: number
 }
 
 type FiltersResponse = {
   categories: string[]
   brands: string[]
+  colors?: string[]
+  sizes?: string[]
   maxPrice: number
 }
 
@@ -51,29 +54,28 @@ export const useProducts = (
   return useQuery<PaginatedResponse>({
     queryKey: ['products', filters, page, size],
     queryFn: async () => {
-      const params: Record<string, string | number | undefined> = {
-        search: filters?.search || undefined,
-        category: filters?.category || undefined,
-        brand: filters?.brand || undefined,
-        minPrice:
-          filters?.priceRange?.[0] !== undefined
-            ? filters.priceRange[0]
-            : undefined,
-        maxPrice:
-          filters?.priceRange?.[1] !== undefined
-            ? filters.priceRange[1]
-            : undefined,
-        page,
-        size,
-      }
+      const params = new URLSearchParams()
 
-      Object.keys(params).forEach((key) => {
-        if (params[key] === undefined || params[key] === '') {
-          delete params[key]
-        }
-      })
+      if (filters?.search) params.append('search', filters.search)
+      if (filters?.categories?.length)
+        filters.categories.forEach((cat) => params.append('categories[]', cat))
+      if (filters?.brands?.length)
+        filters.brands.forEach((brand) => params.append('brands[]', brand))
+      if (filters?.colors?.length)
+        filters.colors.forEach((color) => params.append('colors[]', color))
+      if (filters?.shoeSizes?.length)
+        filters.shoeSizes.forEach((size) => params.append('shoeSizes[]', size))
+      if (filters?.priceRange?.[0] !== undefined)
+        params.append('minPrice', filters.priceRange[0].toString())
+      if (filters?.priceRange?.[1] !== undefined)
+        params.append('maxPrice', filters.priceRange[1].toString())
 
-      const response = await apiClient.get('/products/filter', { params })
+      params.append('page', page.toString())
+      params.append('size', size.toString())
+
+      const response = await apiClient.get(
+        `/products/filter?${params.toString()}`,
+      )
       return response.data
     },
   })
