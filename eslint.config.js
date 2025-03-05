@@ -2,23 +2,26 @@ import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
-import tseslint from 'typescript-eslint'
 import prettier from 'eslint-plugin-prettier'
 import prettierConfig from 'eslint-config-prettier'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 
-export default tseslint.config(
-  { ignores: ['dist'] },
+export default [
+  js.configs.recommended,
   {
-    extends: [
-      js.configs.recommended, 
-      ...tseslint.configs.recommended,
-      prettierConfig,
-    ],
-    files: ['**/*.{ts,tsx}'],
+    files: ['**/*.{js,jsx}'],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      sourceType: 'module',
+      globals: {
+        ...globals.browser,
+        React: 'readonly',
+      },
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
     },
     plugins: {
       'react-hooks': reactHooks,
@@ -35,8 +38,6 @@ export default tseslint.config(
       'prettier/prettier': [
         'error',
         {
-          semi: false,
-          singleQuote: true,
           trailingComma: 'all',
           printWidth: 80,
           tabWidth: 2,
@@ -45,6 +46,12 @@ export default tseslint.config(
       ],
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
+      'no-unused-vars': ['error', { 
+        'vars': 'all',
+        'args': 'after-used',
+        'ignoreRestSiblings': true
+      }],
     },
   },
-)
+  prettierConfig,
+]
