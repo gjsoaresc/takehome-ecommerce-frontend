@@ -41,6 +41,14 @@ export const ProductCard = ({ product }) => {
         sx={{
           borderBottom: '1px solid',
           borderColor: 'divider',
+          backgroundColor: product.color || 'transparent',
+          objectFit: 'cover',
+          '&.MuiCardMedia-img': {
+            objectFit: 'cover',
+          },
+          '&.MuiCardMedia-img:not([src]), &.MuiCardMedia-img[src=""]': {
+            visibility: 'hidden',
+          },
         }}
       />
       <StyledCardContent>
@@ -66,5 +74,6 @@ ProductCard.propTypes = {
     price: PropTypes.number.isRequired,
     imageUrl: PropTypes.string.isRequired,
     brand: PropTypes.string.isRequired,
+    color: PropTypes.string,
   }).isRequired,
 }

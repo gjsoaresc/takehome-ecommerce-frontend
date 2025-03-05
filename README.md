@@ -13,10 +13,22 @@ npm install
 ```
 
 ### 2. Start the Development Server
+
+You have two options to run the application:
+
+#### Option A: With Mock Server (Standalone)
+If you don't have the backend server running, use this option:
+```sh
+npm run dev:mock
+```
+This will start both the **Vite development server** at `http://localhost:5173/` and a **mock server** that simulates the backend API.
+
+#### Option B: With Real Backend
+If you have the [backend server](https://github.com/gjsoaresc/takehome-ecommerce-backend) running:
 ```sh
 npm run dev
 ```
-This will run the **Vite development server** at `http://localhost:5173/`.
+This will run the **Vite development server** at `http://localhost:5173/` and connect to the backend at `http://localhost:8080/api`.
 
 ---
 
@@ -61,9 +73,10 @@ Password: admin123
 - **Zod Validation**
 - **Axios for API requests**
 - **React Router for navigation**
+- **MSW (Mock Service Worker)** for API mocking
 
 ## API Configuration
-This app interacts with a backend API at:
+This app can either use a mock server or connect to a real backend API at:
 ```
 http://localhost:8080/api
 ```

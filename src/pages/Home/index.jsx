@@ -12,13 +12,14 @@ export const Home = () => {
   const [showInstructions, setShowInstructions] = useState(false)
 
   const canSeed = isAuthenticated && user?.role === 'ADMIN'
+  const isMockEnabled = import.meta.env.VITE_USE_MOCK === 'true'
 
   useEffect(() => {
     const alreadySeeded = localStorage.getItem('seeded')
-    if (!alreadySeeded) {
+    if (!alreadySeeded && !isMockEnabled) {
       setShowInstructions(true)
     }
-  }, [user])
+  }, [user, isMockEnabled])
 
   const handleSeed = async () => {
     await seedMutation.mutateAsync()
@@ -33,6 +34,11 @@ export const Home = () => {
           <Typography variant="body1">
             Welcome to the home page. Here you can see the list of products.
           </Typography>
+          {isMockEnabled && (
+            <Typography variant="body2" color="primary" sx={{ mt: 1 }}>
+              Running with mock data
+            </Typography>
+          )}
         </Box>
 
         {showInstructions && (
